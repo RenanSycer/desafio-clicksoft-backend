@@ -1,5 +1,10 @@
 'use strict'
 
+const Aluno = require('../../Models/Aluno')
+const { validateAll } =  use('Validator')
+
+const Usaer = use('App/Models/Aluno')
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -29,7 +34,31 @@ class AlunoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create ({ request, response, view }) {
+  async create ({ request, response }) {
+    
+    try {
+
+      const validation =  await validateAll(request.all(), {
+        matricula:'required|unique:alunos',
+        nome: 'required',
+        email: 'required|unique:alunos',
+        data_nascimento: 'required'
+      })
+
+      if(validation.fails()){
+        return response.status(401).send({message: validation.messages()})
+      }
+
+      const data = request.only(["matricula","nome","email","data_nascimento"])
+
+      const aluno = await Aluno.create(data)
+      
+      return aluno
+
+    } catch (error) {
+      return response.status(500).send({error:`Erro: ${error.message}`})
+    }
+   
   }
 
   /**
