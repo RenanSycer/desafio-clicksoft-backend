@@ -21,3 +21,6 @@ Route.get('/', () => {
 }) 
 
 Route.post("/aluno", "AlunoController.create")
+Route.get("/aluno/show/:id", "AlunoController.show")
+Route.put("/aluno/update/:id", "AlunoController.update")
+Route.delete('/aluno/delete/:id', "AlunoController.destroy")
