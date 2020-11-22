@@ -4,6 +4,9 @@
 const Model = use('Model')
 
 class Aluno extends Model {
+    turma(){
+        return this.belongsToMany('App/Models/Turma')
+    }
 }
 
 module.exports = Aluno
