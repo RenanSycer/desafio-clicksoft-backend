@@ -24,3 +24,8 @@ Route.post("/aluno", "AlunoController.create")
 Route.get("/aluno/show/:id", "AlunoController.show")
 Route.put("/aluno/update/:id", "AlunoController.update")
 Route.delete('/aluno/delete/:id', "AlunoController.destroy")
+
+Route.post("/professor","ProfessorController.create")
+Route.get("/professor/show/:id", "ProfessorController.show")
+Route.put("/professor/update/:id", "ProfessorController.update")
+Route.delete('/professor/delete/:id', "ProfessorController.destroy")
