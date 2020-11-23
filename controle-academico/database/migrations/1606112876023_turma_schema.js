@@ -20,24 +20,6 @@ class TurmaSchema extends Schema {
         .onDelete('cascade')
     })
 
-    this.create('professor_turma',(table) => {
-      table.increments()
-      table.integer('numero_sala').unsigned().notNullable().unique()
-      table.integer('professor_id').unsigned()
-
-      table
-        .foreign('professor_id')
-        .references('id')
-        .inTable('professors')
-        .onDelete('cascade')
-      
-      table
-        .foreign('id') //referente ao primary key da tabela turmas (id) - think on turma_id
-        .references('id')
-        .inTable('turmas')
-        .onDelete('cascade')  
-    })
-
     this.create('aluno_turma',(table) => {
     
       table.increments()

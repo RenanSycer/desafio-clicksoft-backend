@@ -2,6 +2,7 @@
 
 const { query } = require('../../Models/Aluno')
 const Aluno = require('../../Models/Aluno')
+const Turma = use('App/Models/Turma')
 const { validateAll } =  use('Validator')
 const Database =   use('Database')
 
@@ -15,21 +16,7 @@ const Usaer = use('App/Models/Aluno')
  * Resourceful controller for interacting with alunos
  */
 class AlunoController {
-  /**
-   * Show a list of all alunos.
-   * GET alunos
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-/*   async index ({ request, response  }) {
-    const data = request.only(["matricula"])
-    const lista_aluno =  Database.from('alunos').where('matricula','=',  data)
-    return response.send(lista_aluno)
-  } */
-
+ 
   /**
    * Render a form to be used for creating a new aluno.
    * GET alunos/create
@@ -67,17 +54,6 @@ class AlunoController {
   }
 
   /**
-   * Create/save a new aluno.
-   * POST alunos
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
-  }
-
-  /**
    * Display a single aluno.
    * GET alunos/:id
    *
@@ -89,15 +65,6 @@ class AlunoController {
   async show ({ params, request, response  }) {
 
     try {
-      /* await Aluno.query().whereNotExists(function () {
-        this.from('aluno').where('matricula', params.id).fetch()
-      }) */
-      //const data = await Aluno.query().where('matricula', params.id).fetch()
-
-     /*  const data = await Aluno.query().whereExists(function () {
-        this.from('alunos').where('matricula', params.id)
-      }).where() */
-    
       const aluno = await Aluno.findBy('matricula',params.id)
 
       if (!aluno) {
@@ -112,20 +79,6 @@ class AlunoController {
       return response.status(500).send({error:`Erro: ${error.message}`})
     }
 
-    
-   // const lista_aluno =  Database.from('alunos').where('matricula','=',  data)
-  }
-
-  /**
-   * Render a form to update an existing aluno.
-   * GET alunos/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
   }
 
   /**
@@ -173,6 +126,18 @@ class AlunoController {
     
     await aluno.delete()
     return response.status(200).send({message:'O deleção realizada com sucesso '})
+  }
+
+  async listarTurmas ({ params, request, response }){
+    const aluno = await Aluno.findBy('id',params.id)
+    
+    if (!aluno) {
+      return response.status(404).send({message:'Nenhum registro foi encontrado'})
+    }
+
+    let alunoturma = await Aluno.query().select('*').from('aluno_turma').where('aluno_id', params.id).fetch()
+
+  return alunoturma 
   }
 }
 

@@ -14,29 +14,6 @@ const Database =   use('Database')
  * Resourceful controller for interacting with turmas
  */
 class TurmaController {
-  /**
-   * Show a list of all turmas.
-   * GET turmas
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
-  }
-
-  /**
-   * Render a form to be used for creating a new turma.
-   * GET turmas/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
 
   /**
    * Create/save a new turma.
@@ -93,27 +70,6 @@ class TurmaController {
     } catch (error) {
         return response.status(500).send({error:`Erro: ${error.message}`})
     }
-
-    /* if (!professor) {
-      return response.status(404).send({message:'Não há nenhum professor com essa identifiação'})
-    } */
-
-    // let data = await Professor.query().select('*').from('turmas').where('professor_id', params.id).fetch()
-
-    // let professor = await Professor.query().where('matricula', params.id).firstOrFail();
-    //await professor.load('turmas')
-  }
-
-  /**
-   * Render a form to update an existing turma.
-   * GET turmas/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
   }
 
   /**
@@ -182,7 +138,7 @@ class TurmaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async adicionarAlunoTurma ({ request, response }) {
+  async adicionarAlunoTurma ({ params, request, response }) {
 
     try {
 
@@ -199,20 +155,25 @@ class TurmaController {
         return response.status(404).send({message:'Não há turma com o id informado'})
       }
       
-
-
-      let query = await Aluno.query().select('*').from('aluno_turma').where({aluno_id : data.aluno_id, numero_sala: data.numero_sala }).fetch() 
-      console.log(query)
-      console.log(data)
+      const professor = await Professor.findBy('id',params.id)
+    
+      if (!professor) {
+        return response.status(404).send({message:'Não há professor com o id informado'})
       
-      if (query.isOne == false) {
+      } else if (professor.id != turma.professor_id) {
+        
+        return response.status(500).send({message:'Essa turma não pertence a este professor'})
+      }
 
-        await Database.insert({numero_sala: data.numero_sala, aluno_id: data.aluno_id}).into('aluno_turma')
-      
+      let queryTurma = await Turma.query().select('*').from('aluno_turma').where({ numero_sala: data.numero_sala }).fetch()
+      let qtd_turmas = queryTurma.rows.length
+
+      if ( qtd_turmas < turma.capacidade ) {
+        
+      await Database.insert({numero_sala: data.numero_sala, aluno_id: data.aluno_id}).into('aluno_turma')
+ 
       } else {
-      
-        return response.status(500).send({message:'Aluno já cadastrado posteriormente na turma'})
-      
+        return response.status(500).send({message:'Não foi possivel alocar o aluno na turma'})
       }
 
       return data
@@ -220,7 +181,7 @@ class TurmaController {
     } catch (error) {
       return response.status(500).send({error:`Erro: ${error.message}`})
     }
-  
+
   }
 }
 
