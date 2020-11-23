@@ -2,6 +2,7 @@
 
 const { query } = require('../../Models/Professor')
 const Professor = use('App/Models/Professor')
+const Turma = use('App/Models/Turma')
 const { validateAll } =  use('Validator')
 const Database =   use('Database')
 
@@ -153,7 +154,7 @@ class ProfessorController {
     }
     
     await professor.delete()
-    return response.status(200).send({message:'O deleção realizada com sucesso '})
+    return response.status(200).send({message:'A deleção foi realizada com sucesso '})
   }
 }
 

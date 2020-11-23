@@ -29,3 +29,8 @@ Route.post("/professor","ProfessorController.create")
 Route.get("/professor/show/:id", "ProfessorController.show")
 Route.put("/professor/update/:id", "ProfessorController.update")
 Route.delete('/professor/delete/:id', "ProfessorController.destroy")
+
+Route.post('professor/:id/turma','TurmaController.store')
+Route.get("/professor/turma/show/:id", "TurmaController.show")
+Route.put("/professor/turma/update/:id_turma", "TurmaController.update")
+Route.delete('/professor/turma/delete/:id', "TurmaController.destroy")
