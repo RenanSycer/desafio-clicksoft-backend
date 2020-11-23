@@ -5,7 +5,7 @@ const Model = use('Model')
 
 class Aluno extends Model {
     turma(){
-        return this.belongsToMany('App/Models/Turma')
+        return this.belongsToMany('App/Models/Turma').pivotTable('aluno_turma')
     }
 }
 

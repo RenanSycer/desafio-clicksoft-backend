@@ -41,7 +41,7 @@ class TurmaSchema extends Schema {
     this.create('aluno_turma',(table) => {
     
       table.increments()
-      table.integer('numero_sala').unsigned().notNullable().unique()
+      table.integer('numero_sala').unsigned().notNullable()
       table.integer('aluno_id').unsigned()
 
       table

@@ -1,6 +1,7 @@
 'use strict'
 
 const Turma = use('App/Models/Turma')
+const Aluno = use('App/Models/Aluno')
 const Professor = use('App/Models/Professor')
 const { validateAll } =  use('Validator')
 const Database =   use('Database')
@@ -171,6 +172,55 @@ class TurmaController {
     } catch (error) {
       return response.status(500).send({error:`Erro: ${error.message}`})
     }
+  }
+
+  /**
+   * Create/save a new turma.
+   * POST turmas
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async adicionarAlunoTurma ({ request, response }) {
+
+    try {
+
+      const data = request.only(["numero_sala","aluno_id"])
+      const aluno = await Aluno.findBy('id',data.aluno_id)
+  
+      if (!aluno) {
+        return response.status(404).send({message:'Não há aluno com o id informado'})
+      }
+  
+      const turma = await Turma.findBy('id',data.numero_sala)
+      
+      if (!turma) {
+        return response.status(404).send({message:'Não há turma com o id informado'})
+      }
+      
+
+
+      let query = await Aluno.query().select('*').from('aluno_turma').where({aluno_id : data.aluno_id, numero_sala: data.numero_sala }).fetch() 
+      console.log(query)
+      console.log(data)
+      
+      if (query.isOne == false) {
+
+        await Database.insert({numero_sala: data.numero_sala, aluno_id: data.aluno_id}).into('aluno_turma')
+      
+      } else {
+      
+        return response.status(500).send({message:'Aluno já cadastrado posteriormente na turma'})
+      
+      }
+
+      return data
+      
+    } catch (error) {
+      return response.status(500).send({error:`Erro: ${error.message}`})
+    }
+  
   }
 }
 
