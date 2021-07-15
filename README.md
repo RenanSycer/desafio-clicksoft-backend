@@ -1,6 +1,6 @@
-# Desafio Clicksoft - Backend
+# Simple Academic Control Api
 
-Api criada para o desafio da empresa Clicksoft
+Api created only for study purposes
 
 ## Instalação
 
